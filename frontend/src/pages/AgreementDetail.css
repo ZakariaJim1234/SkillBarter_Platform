@@ -1,0 +1,69 @@
+.ag-page { padding: 32px 24px; }
+.ag-layout { display: flex; flex-direction: column; gap: 20px; max-width: 680px; }
+.ag-main {}
+
+.ag-parties {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.party { display: flex; align-items: center; gap: 10px; }
+
+.poster-avatar.large {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+}
+
+.ag-arrow {
+  font-size: 22px;
+  color: var(--accent);
+  flex: 1;
+  text-align: center;
+}
+
+.ag-details {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+
+.ag-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ag-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.step-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+  margin-top: 4px;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.ag-step.done .step-dot { background: var(--success); }
+.ag-step.active .step-dot { background: var(--accent); box-shadow: 0 0 8px rgba(124,106,247,0.5); }
+
+.step-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; font-family: 'Syne', sans-serif; }
+
+.star-picker { display: flex; gap: 4px; margin-bottom: 4px; }

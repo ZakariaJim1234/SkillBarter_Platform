@@ -1,0 +1,100 @@
+.profile-page { padding: 32px 24px; }
+
+.profile-header {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.profile-avatar-wrap {}
+
+.profile-avatar-img {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-avatar-placeholder {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+}
+
+.profile-info { flex: 1; }
+.profile-info h1 { font-size: 28px; margin-bottom: 6px; }
+
+.profile-location { font-size: 14px; color: var(--text3); margin-bottom: 8px; }
+
+.profile-bio { color: var(--text2); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+
+.profile-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-val { font-size: 20px; font-weight: 700; font-family: 'Syne', sans-serif; }
+.stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.accent2 { color: var(--accent2); }
+
+.profile-edit-form {
+  flex: 1;
+}
+
+.profile-edit-form .form-group {
+  margin-bottom: 12px;
+}
+
+.profile-edit-form textarea {
+  resize: vertical;
+}
+
+.profile-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.skill-list { display: flex; flex-direction: column; gap: 12px; }
+
+.skill-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.skill-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.skill-name { font-weight: 600; font-size: 14px; flex: 1; }
+
+.skill-level {
+  font-size: 11px;
+  background: rgba(124,106,247,0.1);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.skill-rate { font-size: 13px; color: var(--accent2); font-weight: 600; }
+
+.skill-desc { font-size: 13px; color: var(--text2); }
+
+.review-list { display: flex; flex-direction: column; gap: 14px; }
+
+.review-item { padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.review-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+
+.review-comment { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
+@media (max-width: 768px) {
+  .profile-body { grid-template-columns: 1fr; }
+}
