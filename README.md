@@ -55,23 +55,12 @@ skillbarter/
 
 ## Getting Started
 
-### 1. Prerequisites
 
-- Node.js 18+
-- MongoDB running locally (or a MongoDB Atlas URI)
-
-### 2. Backend Setup
+### 1. Backend Setup
 
 ```bash
 cd backend
 npm install
-
-# Copy env and configure
-cp .env.example .env
-# Edit .env: set MONGO_URI and JWT_SECRET
-
-# Seed database with skills + demo users
-node seed.js
 
 # Start server
 npm run dev        # with nodemon (dev)
@@ -80,7 +69,8 @@ npm start          # production
 
 Server runs on **http://localhost:5000**
 
-### 3. Frontend Setup
+
+### 2. Frontend Setup
 
 ```bash
 cd frontend
@@ -94,17 +84,6 @@ The frontend proxies `/api` calls to `localhost:5000` (configured in package.jso
 
 ---
 
-## Demo Accounts
-
-After running `node seed.js`:
-
-| Email            | Password   | Role     |
-|------------------|------------|----------|
-| alice@demo.com   | demo1234   | User     |
-| bob@demo.com     | demo1234   | User     |
-| sara@demo.com    | demo1234   | User     |
-
----
 
 ## Core Features
 
@@ -168,10 +147,8 @@ reputation = (avgRating × 0.6) + (completedTasks × 0.3) + (responseRate × 0.1
 
 ## Making an Admin
 
-In MongoDB shell or Compass:
-```js
-db.users.updateOne({ email: "your@email.com" }, { $set: { isAdmin: true } })
-```
+Admin Gmail: kakoli@gmail.com
+Admin Password: dingdong
 
 ---
 
