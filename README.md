@@ -147,7 +147,8 @@ reputation = (avgRating × 0.6) + (completedTasks × 0.3) + (responseRate × 0.1
 
 ## Making an Admin
 
-Admin Gmail: Reshma@gmail.com
+Admin Gmail: reshma@gmail.com
+
 Admin Password: qwerty
 
 ---
