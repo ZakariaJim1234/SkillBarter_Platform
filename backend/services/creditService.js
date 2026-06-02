@@ -43,6 +43,20 @@ exports.releaseCredits = async (userId, amount, session) => {
 };
 
 /**
+ * Match a request's escrow to the accepted agreement amount.
+ */
+exports.adjustReservedCredits = async (userId, currentAmount, targetAmount, session) => {
+  const current = Number(currentAmount) || 0;
+  const target = Number(targetAmount) || 0;
+
+  if (target > current) {
+    await exports.reserveCredits(userId, target - current, session);
+  } else if (current > target) {
+    await exports.releaseCredits(userId, current - target, session);
+  }
+};
+
+/**
  * Transfer credits from requester to provider on completion.
  * Credits were already reserved (deducted from requester), just credit the provider.
  */

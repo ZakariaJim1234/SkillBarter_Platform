@@ -4,6 +4,7 @@ const Offer = require('../models/Offer');
 const Request = require('../models/Request');
 const Agreement = require('../models/Agreement');
 const { protect } = require('../middleware/auth');
+const { adjustReservedCredits, withSession } = require('../services/creditService');
 
 // GET /api/offers/request/:requestId
 router.get('/request/:requestId', protect, async (req, res) => {
@@ -13,7 +14,7 @@ router.get('/request/:requestId', protect, async (req, res) => {
       .sort({ createdAt: -1 });
     res.json(offers);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -68,27 +69,41 @@ router.put('/:id/accept', protect, async (req, res) => {
     if (String(offer.request.requester) !== String(req.user._id))
       return res.status(403).json({ message: 'Not authorized' });
 
-    offer.status = 'accepted';
-    await offer.save();
+    let agreement;
 
-    // Reject all other pending offers
-    await Offer.updateMany(
-      { request: offer.request._id, _id: { $ne: offer._id }, status: 'pending' },
-      { status: 'rejected' }
-    );
+    await withSession(async (session) => {
+      await adjustReservedCredits(
+        req.user._id,
+        offer.request.reservedCredits,
+        offer.proposedCredits,
+        session
+      );
 
-    // Create agreement
-    const agreement = await Agreement.create({
-      request: offer.request._id,
-      offer: offer._id,
-      provider: offer.provider,
-      requester: req.user._id,
-      creditAmount: offer.proposedCredits,
-      deadline: offer.proposedDeadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      offer.status = 'accepted';
+      await offer.save({ session });
+
+      // Reject all other pending offers
+      await Offer.updateMany(
+        { request: offer.request._id, _id: { $ne: offer._id }, status: 'pending' },
+        { status: 'rejected' },
+        { session }
+      );
+
+      // Create agreement
+      const agreements = await Agreement.create([{
+        request: offer.request._id,
+        offer: offer._id,
+        provider: offer.provider,
+        requester: req.user._id,
+        creditAmount: offer.proposedCredits,
+        deadline: offer.proposedDeadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      }], { session });
+      agreement = agreements[0];
+
+      offer.request.status = 'in_progress';
+      offer.request.reservedCredits = offer.proposedCredits;
+      await offer.request.save({ session });
     });
-
-    offer.request.status = 'in_progress';
-    await offer.request.save();
 
     res.json(agreement);
   } catch (err) {

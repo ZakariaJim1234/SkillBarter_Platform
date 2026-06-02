@@ -67,3 +67,42 @@
 .step-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; font-family: 'Syne', sans-serif; }
 
 .star-picker { display: flex; gap: 4px; margin-bottom: 4px; }
+
+.dispute-party-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dispute-party-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dispute-party-header h3 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.dispute-party-header p,
+.dispute-statement p {
+  color: var(--text2);
+}
+
+.dispute-statement {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.dispute-statement.muted {
+  color: var(--text3);
+}
+
+.dispute-response-form {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}

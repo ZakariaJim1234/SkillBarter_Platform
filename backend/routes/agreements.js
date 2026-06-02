@@ -86,7 +86,11 @@ router.put('/:id/confirm', protect, async (req, res) => {
       await agreement.save({ session });
 
       // Update request status
-      await Request.findByIdAndUpdate(agreement.request, { status: 'completed' }, { session });
+      await Request.findByIdAndUpdate(
+        agreement.request,
+        { status: 'completed', reservedCredits: 0 },
+        { session }
+      );
 
       // Increment provider completed tasks
       await User.findByIdAndUpdate(agreement.provider, { $inc: { completedTasks: 1 } }, { session });

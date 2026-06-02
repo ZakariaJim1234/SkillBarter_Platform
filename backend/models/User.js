@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   avatar: { type: String, default: '' },
   bio: { type: String, default: '' },
   location: { type: String, default: '' },
+  contactEmail: { type: String, default: '', trim: true, lowercase: true },
   skillCreditBalance: { type: Number, default: 20 },
   reputationScore: { type: Number, default: 0 },
   completedTasks: { type: Number, default: 0 },

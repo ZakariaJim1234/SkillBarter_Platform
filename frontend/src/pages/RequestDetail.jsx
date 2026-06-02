@@ -20,22 +20,41 @@ export default function RequestDetail() {
   const msgEnd = useRef(null);
 
   const load = async () => {
-    const [reqRes, offRes, msgRes] = await Promise.all([
-      api.get(`/requests/${id}`),
-      user ? api.get(`/offers/request/${id}`) : Promise.resolve({ data: [] }),
-      user ? api.get(`/requests/${id}/messages`) : Promise.resolve({ data: [] }),
-    ]);
-    setRequest(reqRes.data);
-    setOffers(offRes.data);
-    setMessages(msgRes.data);
-    setLoading(false);
+    try {
+      const [reqRes, offRes] = await Promise.all([
+        api.get(`/requests/${id}`),
+        user ? api.get(`/offers/request/${id}`) : Promise.resolve({ data: [] }),
+      ]);
+
+      setRequest(reqRes.data);
+      setOffers(offRes.data);
+
+      const isRequestOwner = user && String(reqRes.data.requester._id) === String(user._id);
+      const userHasOffer = user && offRes.data.some(o => String(o.provider._id) === String(user._id));
+
+      if (isRequestOwner || userHasOffer) {
+        const msgRes = await api.get(`/requests/${id}/messages`);
+        setMessages(msgRes.data);
+      } else {
+        setMessages([]);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to load request');
+      setRequest(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { load(); }, [id]);
+  useEffect(() => {
+    setLoading(true);
+    load();
+  }, [id, user?._id]);
   useEffect(() => { msgEnd.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
   const isRequester = user && request && String(request.requester._id) === String(user._id);
   const hasOffer = user && offers.some(o => String(o.provider._id) === String(user._id));
+  const canUseChat = Boolean(user && (isRequester || hasOffer));
 
   const sendOffer = async (e) => {
     e.preventDefault();
@@ -102,7 +121,7 @@ export default function RequestDetail() {
       const res = await api.get(`/requests/${id}/messages`);
       setMessages(res.data);
     } catch (err) {
-      toast.error('Failed to send message');
+      toast.error(err.response?.data?.message || 'Failed to send message');
     }
   };
 
@@ -218,7 +237,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Chat */}
-      {user && (
+      {canUseChat && (
         <div className="rd-sidebar">
           <div className="card chat-card">
             <h3 className="rd-section-title">Negotiation Chat</h3>

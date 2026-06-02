@@ -31,6 +31,8 @@ export default function Navbar() {
                 <span className="credit-icon">◈</span>
                 <span>{user.skillCreditBalance ?? '—'}</span>
               </div>
+              {user.isAdmin && <Link to="/admin" className="btn btn-secondary btn-sm">Admin</Link>}
+              <Link to="/profile" className="btn btn-secondary btn-sm">Profile</Link>
               <Link to="/dashboard" className="btn btn-secondary btn-sm">Dashboard</Link>
               <button className="btn btn-primary btn-sm" onClick={handleLogout}>Logout</button>
             </>

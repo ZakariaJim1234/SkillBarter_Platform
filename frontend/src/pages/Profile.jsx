@@ -11,7 +11,7 @@ export default function Profile() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ name: '', bio: '', location: '', avatar: '' });
+  const [editForm, setEditForm] = useState({ name: '', bio: '', location: '', contactEmail: '', avatar: '' });
   const [saving, setSaving] = useState(false);
 
   const isOwn = authUser && authUser._id === id;
@@ -24,6 +24,7 @@ export default function Profile() {
           name: r.data.user.name || '',
           bio: r.data.user.bio || '',
           location: r.data.user.location || '',
+          contactEmail: r.data.user.contactEmail || '',
           avatar: r.data.user.avatar || '',
         });
       })
@@ -76,6 +77,15 @@ export default function Profile() {
               </div>
             </div>
             <div className="form-group">
+              <label>Contact Email</label>
+              <input
+                type="email"
+                placeholder="Public email for skill requests"
+                value={editForm.contactEmail}
+                onChange={e => setEditForm(f => ({ ...f, contactEmail: e.target.value }))}
+              />
+            </div>
+            <div className="form-group">
               <label>Avatar URL</label>
               <input placeholder="https://…" value={editForm.avatar} onChange={e => setEditForm(f => ({ ...f, avatar: e.target.value }))} />
             </div>
@@ -97,7 +107,17 @@ export default function Profile() {
               )}
             </div>
             {user.location && <p className="profile-location">📍 {user.location}</p>}
+            {user.contactEmail && (
+              <p className="profile-contact">
+                Contact: <a href={`mailto:${user.contactEmail}`}>{user.contactEmail}</a>
+              </p>
+            )}
             {user.bio && <p className="profile-bio">{user.bio}</p>}
+            {isOwn && (!user.bio || !user.location || !user.contactEmail) && (
+              <p className="profile-missing">
+                Add your bio, location, and contact email so members can learn about you from the marketplace.
+              </p>
+            )}
             <div className="profile-stats">
               <div className="stat">
                 <span className="stat-val accent2">◈ {user.reputationScore.toFixed(1)}</span>

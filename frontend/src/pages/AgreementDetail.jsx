@@ -10,14 +10,22 @@ export default function AgreementDetail() {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [agreement, setAgreement] = useState(null);
+  const [dispute, setDispute] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [disputeResponse, setDisputeResponse] = useState('');
   const [reviewed, setReviewed] = useState(false);
 
   const load = async () => {
     try {
       const res = await api.get(`/agreements/${id}`);
       setAgreement(res.data);
+      if (res.data.status === 'disputed') {
+        const disputeRes = await api.get(`/disputes/agreement/${id}`);
+        setDispute(disputeRes.data);
+      } else {
+        setDispute(null);
+      }
     } catch { navigate('/dashboard'); }
     finally { setLoading(false); }
   };
@@ -47,7 +55,17 @@ export default function AgreementDetail() {
     if (!desc) return;
     try {
       await api.post('/disputes', { agreementId: id, description: desc });
-      toast.success('Dispute opened. An admin will review it.');
+      toast.success('Dispute opened. Waiting for the other party to respond.');
+      load();
+    } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
+  };
+
+  const submitDisputeResponse = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/disputes/${dispute._id}/respond`, { response: disputeResponse });
+      toast.success('Your response was submitted. Admin can now review both sides.');
+      setDisputeResponse('');
       load();
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
   };
@@ -66,6 +84,8 @@ export default function AgreementDetail() {
 
   const isProvider = String(agreement.provider._id) === String(user?._id);
   const isRequester = String(agreement.requester._id) === String(user?._id);
+  const isComplainant = String(dispute?.complainant?._id || dispute?.complainant) === String(user?._id);
+  const canRespondToDispute = dispute?.status === 'open' && !isComplainant;
 
   return (
     <div className="container ag-page">
@@ -147,6 +167,55 @@ export default function AgreementDetail() {
             </button>
           )}
         </div>
+
+        {agreement.status === 'disputed' && dispute && (
+          <div className="card dispute-party-card">
+            <div className="dispute-party-header">
+              <div>
+                <h3>Dispute</h3>
+                <p>
+                  {dispute.status === 'open'
+                    ? 'Waiting for the other party to submit their side.'
+                    : 'Both sides have submitted statements. Admin will review the case.'}
+                </p>
+              </div>
+              <span className={`badge badge-${dispute.status === 'open' ? 'disputed' : 'negotiating'}`}>
+                {dispute.status.replace('_', ' ')}
+              </span>
+            </div>
+
+            <div className="dispute-statement">
+              <span className="info-label">Opened by {dispute.complainant?.name || 'Complainant'}</span>
+              <p>{dispute.description}</p>
+            </div>
+
+            {dispute.response ? (
+              <div className="dispute-statement">
+                <span className="info-label">Response from {dispute.respondent?.name || 'Other party'}</span>
+                <p>{dispute.response}</p>
+              </div>
+            ) : canRespondToDispute ? (
+              <form onSubmit={submitDisputeResponse} className="dispute-response-form">
+                <div className="form-group">
+                  <label>Your Response</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Explain your side of the dispute for the admin."
+                    value={disputeResponse}
+                    onChange={e => setDisputeResponse(e.target.value)}
+                    required
+                  />
+                </div>
+                <button className="btn btn-primary">Submit Response</button>
+              </form>
+            ) : (
+              <div className="dispute-statement muted">
+                <span className="info-label">Other Side</span>
+                <p>No response submitted yet.</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Leave a review */}
         {agreement.status === 'completed' && !reviewed && (

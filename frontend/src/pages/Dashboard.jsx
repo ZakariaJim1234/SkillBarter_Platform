@@ -22,7 +22,6 @@ export default function Dashboard() {
   useEffect(() => {
     api.get('/skills').then(r => setAllSkills(r.data));
     refreshUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -70,7 +69,10 @@ export default function Dashboard() {
           <h1>Dashboard</h1>
           <p style={{ color: 'var(--text2)' }}>Welcome back, <strong>{user?.name}</strong></p>
         </div>
-        <Link to="/requests/new" className="btn btn-primary">+ Post Request</Link>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <Link to="/profile" className="btn btn-secondary">Edit Profile</Link>
+          <Link to="/requests/new" className="btn btn-primary">+ Post Request</Link>
+        </div>
       </div>
 
       {/* Stats row */}

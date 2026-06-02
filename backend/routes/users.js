@@ -37,10 +37,10 @@ router.get('/', async (req, res) => {
 // PUT /api/users/profile — update own profile (must be before /:id)
 router.put('/profile', protect, async (req, res) => {
   try {
-    const { name, bio, location, avatar } = req.body;
+    const { name, bio, location, avatar, contactEmail } = req.body;
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { name, bio, location, avatar },
+      { name, bio, location, avatar, contactEmail },
       { new: true }
     ).select('-password');
     res.json(user);
