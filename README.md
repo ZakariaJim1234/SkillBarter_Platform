@@ -67,7 +67,7 @@ cd backend
 npm install
 
 # Copy env and configure
-cp .env.example .env
+copy .env.example .env
 # Edit .env: set MONGO_URI and JWT_SECRET
 
 # Seed database with skills + demo users
