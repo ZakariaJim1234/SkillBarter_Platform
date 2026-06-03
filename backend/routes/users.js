@@ -34,14 +34,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+const { body, validationResult } = require('express-validator');
+
 // PUT /api/users/profile — update own profile (must be before /:id)
-router.put('/profile', protect, async (req, res) => {
+router.put('/profile', protect, [
+  body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 100 }).withMessage('Name too long'),
+  body('bio').optional().trim().isLength({ max: 500 }).withMessage('Bio must be under 500 characters'),
+  body('location').optional().trim().isLength({ max: 100 }).withMessage('Location too long'),
+  body('contactEmail').optional({ checkFalsy: true }).trim().isEmail().withMessage('Invalid contact email format'),
+  body('avatar').optional({ checkFalsy: true }).trim().isURL().withMessage('Avatar must be a valid URL'),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ message: errors.array()[0].msg });
+
   try {
     const { name, bio, location, avatar, contactEmail } = req.body;
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { name, bio, location, avatar, contactEmail },
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-password');
     res.json(user);
   } catch (err) {
