@@ -64,7 +64,6 @@ npm install
 
 # Start server
 npm run dev        # with nodemon (dev)
-npm start          # production
 ```
 
 Server runs on **http://localhost:5000**
@@ -147,7 +146,7 @@ reputation = (avgRating × 0.6) + (completedTasks × 0.3) + (responseRate × 0.1
 
 ## Making an Admin
 
-Admin Gmail: reshma@gmail.com
+Admin Gmail: ironman@gmail.com
 
 Admin Password: qwerty
 
