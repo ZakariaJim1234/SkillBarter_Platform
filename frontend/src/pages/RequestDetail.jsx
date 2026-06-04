@@ -53,7 +53,7 @@ export default function RequestDetail() {
   useEffect(() => { msgEnd.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
   const isRequester = user && request && String(request.requester._id) === String(user._id);
-  const hasOffer = user && offers.some(o => String(o.provider._id) === String(user._id));
+  const hasOffer = user && offers.some(o => String(o.provider._id) === String(user._id) && o.status === 'pending'); //latest add
   const canUseChat = Boolean(user && (isRequester || hasOffer));
 
   const sendOffer = async (e) => {
