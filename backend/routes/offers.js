@@ -121,6 +121,17 @@ router.put('/:id/reject', protect, async (req, res) => {
 
     offer.status = 'rejected';
     await offer.save();
+
+    // If no other pending offers remain, reopen the request
+    //latest add
+    const remainingPending = await Offer.countDocuments({
+      request: offer.request._id,
+      status: 'pending',
+    });
+    if (remainingPending === 0) {
+      await Request.findByIdAndUpdate(offer.request._id, { status: 'open' });
+    }
+    
     res.json(offer);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -139,6 +150,17 @@ router.put('/:id/withdraw', protect, async (req, res) => {
 
     offer.status = 'withdrawn';
     await offer.save();
+
+    // If no other pending offers remain, reopen the request
+    //latest add
+    const remainingPending = await Offer.countDocuments({
+      request: offer.request,
+      status: 'pending',
+    });
+    if (remainingPending === 0) {
+      await Request.findByIdAndUpdate(offer.request, { status: 'open' });
+    }
+    
     res.json(offer);
   } catch (err) {
     res.status(500).json({ message: err.message });
