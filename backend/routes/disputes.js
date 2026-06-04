@@ -160,9 +160,12 @@ router.put('/:id/resolve', protect, adminOnly, async (req, res) => {
 
       agreement.status = 'completed';
       await agreement.save({ session });
+
+      //latest add
+      const requestFinalStatus = (outcome === 'provider') ? 'completed' : 'open';
       await Request.findByIdAndUpdate(
         agreement.request,
-        { status: 'completed', reservedCredits: 0 },
+        { status: requestFinalStatus, reservedCredits: 0 },
         { session }
       );
 
