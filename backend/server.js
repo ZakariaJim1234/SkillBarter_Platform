@@ -5,10 +5,12 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-connectDB();
 
 app.use(cors());
 app.use(express.json());
+app.use(async (req, res, next) => {
+  try { await connectDB(); next(); } catch (e) { next(e); }
+});
 
 // Routes
 app.use('/api/auth',         require('./routes/auth'));
@@ -28,5 +30,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Server error', error: err.message });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+module.exports = app;
